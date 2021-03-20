@@ -1,9 +1,9 @@
 class WordClass:
-    occurred_times = 0
     correct_answers = 0
     incorrect_answers = 0
     image = None
     association = ""
+    occurred_times = correct_answers + incorrect_answers
     
     def __init__(self, japanese_word, english_word, kanji):
         self.japanese_word = japanese_word
