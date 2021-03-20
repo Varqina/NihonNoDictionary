@@ -1,9 +1,7 @@
 import tkinter as tk
 from tkinter import *
-from PIL import Image
-
-
 from CreateToolTipClass import CreateToolTip
+
 
 BACKGROUND_COLOR = "#D5F5E3"
 
@@ -13,8 +11,10 @@ window.title("日本の辞書")
 
 canvas = Canvas(width=860, height=570, bg=BACKGROUND_COLOR, highlightthickness=0)
 front_image = PhotoImage(file="images/card_front.png")
-word_image = Image("images/test.png")
-word_image
+word_image = PhotoImage(file="images/test.png")
+
+word_image = word_image.subsample(2)
+
 
 canvas.create_image(430, 300, image=front_image)
 canvas.create_image(215, 400, image=word_image)
@@ -61,5 +61,5 @@ ploand_flag_image = PhotoImage(file="images/polskaflaga.png")
 poland_flag_button = Button(text="Poland flag", image=ploand_flag_image)
 poland_flag_button_window = canvas.create_window(630, 70, window=poland_flag_button)
 
-47/30
+#47/30
 tk.mainloop()
