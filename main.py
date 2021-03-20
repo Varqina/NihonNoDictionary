@@ -1,10 +1,10 @@
 from WordClass import WordClass
-import tkinter as tk
+import tkinter 
 from tkinter import *
 from CreateToolTipClass import CreateToolTip
 import math
-import pandas as pd
-
+import pandas
+import random
 BACKGROUND_COLOR = "#D5F5E3"
 
 def adjust_image(photo_image_object):
@@ -19,11 +19,37 @@ def adjust_image(photo_image_object):
         
     return photo_image_object.subsample(size_factor)
 
-def get_word()
+def set_word_on_gui():
+    word = get_word()
+    canvas.itemconfig(japan_word_canvas, text=word.japanese_word)
+    canvas.itemconfig(english_word_canvas, text='*' * len(word.english_word))
+    canvas.itemconfig(word_description_canvas, text=word.description)
+    canvas.itemconfig(kanji_canvas, text=word.kanji)
+    if 17 < len(word.english_word) < 20 and not "/n" in word.english_word:
+        canvas.itemconfig(english_word_canvas, font=("Arial", 24, "bold"))
+    elif 20 < len(word.english_word) < 30 and not "/n" in word.english_word:
+        canvas.itemconfig(english_word_canvas, font=("Arial", 18, "bold"))
+    else:
+        canvas.itemconfig(english_word_canvas, font=("Arial", 30, "bold"))
+    if word.image is not None:
+        word_image = PhotoImage(file=word.image)
+        word_image = adjust_image(word_image)
+        canvas.itemconfig(word_image_canvas, image=word_image)
+    global word_on_the_screen
+    word_on_the_screen = word
 
+def get_word():
+    word = main_word_list[random.randint(0, len(main_word_list))]
+    return word
+
+def setup_translation_visibility():
+    if '*' in canvas.itemcget(english_word_canvas, 'text'):
+        canvas.itemconfig(english_word_canvas, text=word_on_the_screen.english_word)
+    else:
+        canvas.itemconfig(english_word_canvas, text='*' * len(word_on_the_screen.english_word))
 
 #Read data from CSV file and load to main word list
-data = pd.read_csv("JLPTN5.csv").to_dict('list')
+data = pandas.read_csv("JLPTN5.csv").to_dict('list')
 word_bank = data['Phrase']
 main_word_list =  []
 for word in word_bank:
@@ -39,58 +65,51 @@ for word in word_bank:
     main_word_list.append(WordClass(japanese_word, english_word, kanji))
 
 
-window = tk.Tk()
+#word_on_the_screen = get_word()
+window = tkinter.Tk()
 window.config(bg=BACKGROUND_COLOR, padx=10, pady=10)
 window.title("日本の辞書")
 
 canvas = Canvas(width=860, height=570, bg=BACKGROUND_COLOR, highlightthickness=0)
 front_image = PhotoImage(file="images/card_front.png")
-word_image = PhotoImage(file="images/test.png")
-word_image = adjust_image(word_image)
 canvas.create_image(430, 300, image=front_image)
-canvas.create_image(215, 400, image=word_image)
-#allow width = 430, height=200
+word_image_canvas = canvas.create_image(215, 400)
 
 
-canvas.create_text(200, 110, text="nihonnowordo", font=("Arial", 20, "bold"))
-canvas.create_text(630, 110, text="porandonowordo", font=("Arial", 20, "bold"))
-canvas.create_text(430, 200, text="Word's description", font=("Arial", 30, "bold"))
-canvas.create_text(615, 400, text="漢字", font=("Arial", 100, "bold"))
+japan_word_canvas = canvas.create_text(200, 130, text="", font=("Arial", 30, "bold"))
+english_word_canvas = canvas.create_text(630, 130, text="", font=("Arial", 30, "bold"))
+word_description_canvas = canvas.create_text(430, 200, text="", font=("Arial", 50, "bold"))
+kanji_canvas = canvas.create_text(615, 400, text="", font=("Arial", 50, "bold"))
 
 canvas.grid(column=0, row=0, columnspan=5, pady=20, padx=20)
 
-# Add image button definition #
+#Buttons section
 add_image_icon = PhotoImage(file="images/addPhoto.png")
 add_image = Button(text="Add Image", image=add_image_icon)
 
-# Add association button definition #
 add_association_icon = PhotoImage(file="images/add-text.png")
 add_association_button = Button(text="Add Association Text", image=add_association_icon)
 add_association_hint = CreateToolTip(add_association_button, "Click to add text association")
 
-#Add plus button
 plus_button_icon = PhotoImage(file="images/right.png")
-plus_button = Button(text="+", image=plus_button_icon, bg=BACKGROUND_COLOR)
+plus_button = Button(text="+", image=plus_button_icon, bg=BACKGROUND_COLOR, command=set_word_on_gui)
 
-#Add minus button
 minus_button_icon = PhotoImage(file="images/wrong.png")
-minus_button = Button(text="-", image=minus_button_icon)
+minus_button = Button(text="-", image=minus_button_icon, command=set_word_on_gui)
 
-#Add kanji button
 kanji_button_icon = PhotoImage(file="images/kanji.png")
 kanji_button = Button(text="kanji", image=kanji_button_icon)
 kanji_hint = CreateToolTip(kanji_button, "Click to add kanji")
 
-#Button placement
 plus_button.grid(column=0, row=3)
 minus_button.grid(column=1, row=3)
 add_image.grid(column=2, row=3)
 add_association_button.grid(column=3, row=3)
 kanji_button.grid(column=4, row=3)
 
-english_flag_image = PhotoImage(file="images/polskaflaga.png")
-english_flag_button = Button(text="English flag", image=english_flag_image)
+english_flag_image = PhotoImage(file="images/englishflag.png")
+english_flag_button = Button(text="English flag", image=english_flag_image, command=setup_translation_visibility)
 english_flag_button_window = canvas.create_window(630, 70, window=english_flag_button)
 
-#47/30
-tk.mainloop()
+set_word_on_gui()
+window.mainloop()
