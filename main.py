@@ -1,3 +1,4 @@
+from turtle import width
 from WordClass import WordClass
 import tkinter 
 from tkinter import *
@@ -5,6 +6,7 @@ from CreateToolTipClass import CreateToolTip
 import math
 import pandas
 import random
+
 BACKGROUND_COLOR = "#D5F5E3"
 
 def adjust_image(photo_image_object):
@@ -23,7 +25,7 @@ def set_word_on_gui():
     word = get_word()
     canvas.itemconfig(japan_word_canvas, text=word.japanese_word)
     canvas.itemconfig(english_word_canvas, text='*' * len(word.english_word))
-    canvas.itemconfig(word_description_canvas, text=word.description)
+    canvas.itemconfig(word_association_canvas, text=word.association)
     canvas.itemconfig(kanji_canvas, text=word.kanji)
     if 17 < len(word.english_word) < 20 and not "/n" in word.english_word:
         canvas.itemconfig(english_word_canvas, font=("Arial", 24, "bold"))
@@ -39,7 +41,7 @@ def set_word_on_gui():
     word_on_the_screen = word
 
 def get_word():
-    word = main_word_list[random.randint(0, len(main_word_list))]
+    word = main_word_list[random.randint(0, len(main_word_list) -1)]
     return word
 
 def setup_translation_visibility():
@@ -48,6 +50,28 @@ def setup_translation_visibility():
     else:
         canvas.itemconfig(english_word_canvas, text='*' * len(word_on_the_screen.english_word))
 
+def save_association():
+    #TODO
+    global association_entry
+    user_association = association_entry.get()
+    global word_on_the_screen
+    word_on_the_screen.association = user_association
+    canvas.itemconfig(word_association_canvas, text=word_on_the_screen.association)
+    
+
+def add_association():
+    input_window = Toplevel()
+    input_window.config(bg=BACKGROUND_COLOR, padx=10, pady=10)
+    input_window.title("Set association")
+    association_label = Label(input_window, text=f"Provide association for the word {word_on_the_screen.japanese_word}",
+                                                 bg=BACKGROUND_COLOR, font=("Arial", 14, "bold"))
+    global association_entry
+    association_entry = Entry(input_window, width = 50)
+    save_button = Button(input_window, text="Save", command=save_association)
+    association_label.pack()
+    association_entry.pack()
+    save_button.pack()
+    
 #Read data from CSV file and load to main word list
 data = pandas.read_csv("JLPTN5.csv").to_dict('list')
 word_bank = data['Phrase']
@@ -65,7 +89,6 @@ for word in word_bank:
     main_word_list.append(WordClass(japanese_word, english_word, kanji))
 
 
-#word_on_the_screen = get_word()
 window = tkinter.Tk()
 window.config(bg=BACKGROUND_COLOR, padx=10, pady=10)
 window.title("日本の辞書")
@@ -78,7 +101,7 @@ word_image_canvas = canvas.create_image(215, 400)
 
 japan_word_canvas = canvas.create_text(200, 130, text="", font=("Arial", 30, "bold"))
 english_word_canvas = canvas.create_text(630, 130, text="", font=("Arial", 30, "bold"))
-word_description_canvas = canvas.create_text(430, 200, text="", font=("Arial", 50, "bold"))
+word_association_canvas = canvas.create_text(430, 200, text="", font=("Arial", 30, "bold"))
 kanji_canvas = canvas.create_text(615, 400, text="", font=("Arial", 50, "bold"))
 
 canvas.grid(column=0, row=0, columnspan=5, pady=20, padx=20)
@@ -88,7 +111,7 @@ add_image_icon = PhotoImage(file="images/addPhoto.png")
 add_image = Button(text="Add Image", image=add_image_icon)
 
 add_association_icon = PhotoImage(file="images/add-text.png")
-add_association_button = Button(text="Add Association Text", image=add_association_icon)
+add_association_button = Button(text="Add Association Text", image=add_association_icon, command=add_association)
 add_association_hint = CreateToolTip(add_association_button, "Click to add text association")
 
 plus_button_icon = PhotoImage(file="images/right.png")

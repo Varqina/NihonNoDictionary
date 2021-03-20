@@ -3,7 +3,7 @@ class WordClass:
     correct_answers = 0
     incorrect_answers = 0
     image = None
-    description = ""
+    association = ""
     
     def __init__(self, japanese_word, english_word, kanji):
         self.japanese_word = japanese_word
