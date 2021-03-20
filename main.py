@@ -1,7 +1,11 @@
+from WordClass import WordClass
 import tkinter as tk
 from tkinter import *
 from CreateToolTipClass import CreateToolTip
 import math
+import pandas as pd
+
+BACKGROUND_COLOR = "#D5F5E3"
 
 def adjust_image(photo_image_object):
     width = photo_image_object.width()
@@ -14,10 +18,26 @@ def adjust_image(photo_image_object):
             size_factor = math.ceil(height / 200)
         
     return photo_image_object.subsample(size_factor)
-    
+
+def get_word()
 
 
-BACKGROUND_COLOR = "#D5F5E3"
+#Read data from CSV file and load to main word list
+data = pd.read_csv("JLPTN5.csv").to_dict('list')
+word_bank = data['Phrase']
+main_word_list =  []
+for word in word_bank:
+    word = word.split('-')
+    english_word = word[1]
+    word = word[0].replace(" ","").split(',')
+    if len(word) == 2:
+        kanji = word[0]
+        japanese_word = word[1]
+    else:
+        kanji = ""
+        japanese_word = word[0]
+    main_word_list.append(WordClass(japanese_word, english_word, kanji))
+
 
 window = tk.Tk()
 window.config(bg=BACKGROUND_COLOR, padx=10, pady=10)
@@ -68,9 +88,9 @@ add_image.grid(column=2, row=3)
 add_association_button.grid(column=3, row=3)
 kanji_button.grid(column=4, row=3)
 
-ploand_flag_image = PhotoImage(file="images/polskaflaga.png")
-poland_flag_button = Button(text="Poland flag", image=ploand_flag_image)
-poland_flag_button_window = canvas.create_window(630, 70, window=poland_flag_button)
+english_flag_image = PhotoImage(file="images/polskaflaga.png")
+english_flag_button = Button(text="English flag", image=english_flag_image)
+english_flag_button_window = canvas.create_window(630, 70, window=english_flag_button)
 
 #47/30
 tk.mainloop()
