@@ -1,6 +1,20 @@
 import tkinter as tk
 from tkinter import *
 from CreateToolTipClass import CreateToolTip
+import math
+
+def adjust_image(photo_image_object):
+    width = photo_image_object.width()
+    height = photo_image_object.height()
+    size_factor = 0
+    if width > 430 or height > 200:
+        if width > 430:
+            size_factor = math.ceil(width / 430)
+        else:
+            size_factor = math.ceil(height / 200)
+        
+    return photo_image_object.subsample(size_factor)
+    
 
 
 BACKGROUND_COLOR = "#D5F5E3"
@@ -12,10 +26,7 @@ window.title("日本の辞書")
 canvas = Canvas(width=860, height=570, bg=BACKGROUND_COLOR, highlightthickness=0)
 front_image = PhotoImage(file="images/card_front.png")
 word_image = PhotoImage(file="images/test.png")
-
-word_image = word_image.subsample(2)
-
-
+word_image = adjust_image(word_image)
 canvas.create_image(430, 300, image=front_image)
 canvas.create_image(215, 400, image=word_image)
 #allow width = 430, height=200
