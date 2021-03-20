@@ -35,10 +35,11 @@ minus_button = Button(text="-", image=minus_button_icon)
 kanji_button_icon = PhotoImage(file="images/kanji.png")
 kanji_button = Button(image=kanji_button_icon)
 
-add_image.grid(column=2, row=3)
-add_association_button.grid(column=3, row=3)
+#Button placement
 plus_button.grid(column=0, row=3)
 minus_button.grid(column=1, row=3)
-kanji_button.grid
+add_image.grid(column=2, row=3)
+add_association_button.grid(column=3, row=3)
+kanji_button.grid(column=4, row=3)
 
 tk.mainloop()
