@@ -1,4 +1,3 @@
-from turtle import width
 from WordClass import WordClass
 import tkinter 
 from tkinter import *
@@ -32,12 +31,12 @@ def set_word_on_gui():
     occurred_times_label.config(text=f"Occurred: {word.occurred_times}")
     score_label.config(text=f"Score: {session_correct_answers_amount}/{session_incorrect_answers_amount}")
     
-    if 17 < len(word.english_word) < 20 and not "/n" in word.english_word:
-        canvas.itemconfig(english_word_canvas, font=("Arial", 24, "bold"))
-    elif 20 < len(word.english_word):
-        canvas.itemconfig(english_word_canvas, font=("Arial", 20, "bold"))
-    else:
-        canvas.itemconfig(english_word_canvas, font=("Arial", 30, "bold"))
+    # if 17 < len(word.english_word) < 20 and not "/n" in word.english_word:
+    #     canvas.itemconfig(english_word_canvas, font=("Arial", 24, "bold"))
+    # elif 20 < len(word.english_word):
+    #     canvas.itemconfig(english_word_canvas, font=("Arial", 20, "bold"))
+    # else:
+    #     canvas.itemconfig(english_word_canvas, font=("Arial", 30, "bold"))
     if word.image is not None:
         word_image = PhotoImage(file=word.image)
         word_image = adjust_image(word_image)
@@ -54,24 +53,21 @@ def setup_translation_visibility():
         canvas.itemconfig(english_word_canvas, text=word_on_the_screen.english_word)
     else:
         canvas.itemconfig(english_word_canvas, text='*' * len(word_on_the_screen.english_word))
-
-def save_association():
-    #TODO
-    global association_entry
-    user_association = association_entry.get()
-    global word_on_the_screen
-    word_on_the_screen.association = user_association
-    canvas.itemconfig(word_association_canvas, text=word_on_the_screen.association)
     
 def add_association():
-    input_window = Toplevel()
-    input_window.config(bg=BACKGROUND_COLOR, padx=10, pady=10)
-    input_window.title("Set association")
-    association_label = Label(input_window, text=f"Provide association for the word {word_on_the_screen.japanese_word}",
+    inpt_window = Toplevel()
+    inpt_window.config(bg=BACKGROUND_COLOR, padx=10, pady=10)
+    inpt_window.title("Set association")
+    association_label = Label(inpt_window, text=f"Provide association for the word {word_on_the_screen.japanese_word}",
                                                  bg=BACKGROUND_COLOR, font=("Arial", 14, "bold"))
-    global association_entry
-    association_entry = Entry(input_window, width = 50)
-    save_button = Button(input_window, text="Save", command=save_association)
+    association_entry = Entry(inpt_window, width = 50)
+    def save_association():
+        user_association = association_entry.get()
+        global word_on_the_screen
+        word_on_the_screen.association = user_association
+        canvas.itemconfig(word_association_canvas, text=word_on_the_screen.association)
+        inpt_window.destroy()    
+    save_button = Button(inpt_window, text="Save", command=save_association)
     association_label.pack()
     association_entry.pack()
     save_button.pack()
@@ -120,7 +116,7 @@ front_image = PhotoImage(file="images/card_front.png")
 canvas.create_image(430, 300, image=front_image)
 word_image_canvas = canvas.create_image(215, 400)
 japan_word_canvas = canvas.create_text(200, 130, text="", font=("Arial", 30, "bold"))
-english_word_canvas = canvas.create_text(630, 130, text="", font=("Arial", 30, "bold"))
+english_word_canvas = canvas.create_text(630, 130, width=200, text="", font=("Arial", 30, "bold"))
 word_association_canvas = canvas.create_text(430, 200, text="", font=("Arial", 30, "bold"))
 kanji_canvas = canvas.create_text(615, 400, text="", font=("Arial", 50, "bold"))
 canvas.grid(column=0, row=1, columnspan=5, pady=20, padx=20)
@@ -157,7 +153,7 @@ kanji_hint = CreateToolTip(kanji_button, "Click to add kanji")
 
 english_flag_image = PhotoImage(file="images/englishflag.png")
 english_flag_button = Button(text="English flag", image=english_flag_image, command=setup_translation_visibility)
-english_flag_button_window = canvas.create_window(630, 70, window=english_flag_button)
+english_flag_button_window = canvas.create_window(480, 120, window=english_flag_button)
 
 plus_button.grid(column=0, row=4)
 minus_button.grid(column=1, row=4)
